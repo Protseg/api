@@ -14,7 +14,7 @@ RUN go mod download
 COPY . .
 
 # Build the Go binary
-RUN go build main.go -o api-linux
+RUN go build -o api-linux
 
 # Expose port 3003 for the container
 EXPOSE 3003
