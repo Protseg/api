@@ -1,23 +1,21 @@
-# Use the official Golang image as the base
-FROM golang:1.20.3
+FROM oven/bun
 
-# Set the working directory inside the container
 WORKDIR /app
 
-# Copy the Go module files
-COPY go.mod go.sum ./
+COPY package.json .
+COPY bun.lockb .
 
-# Download Go module dependencies
-RUN go mod download
+RUN bun install --production
 
-# Copy the entire source code
-COPY . .
+COPY src src
+COPY tsconfig.json .
+# COPY public public
 
-# Build the Go binary
-RUN go build -o api-linux
+ENV NODE_ENV production
+CMD ["bun", "src/index.ts"]
 
-# Expose port 3003 for the container
-EXPOSE 3003
+EXPOSE 3000
 
-# Set the entrypoint to run the binary
-ENTRYPOINT ["./api-linux"]
+# trying to fix build
+# trying to fix build
+# trying to fix build
