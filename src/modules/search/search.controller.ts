@@ -10,7 +10,7 @@ export const searchController = new Elysia()
       const id = query.id;
 
       const [results] = await sql.execute(
-        "SELECT psimples.adReferencia AS product_ref, REPLACE(COALESCE(psimples.adDiscriminacao, pcomposto.adModelo), '\t', '') AS product_name FROM ppedidos pedidos LEFT JOIN ppedidosimples psimples ON pedidos.id = psimples.adIdPedido LEFT JOIN ppedidocomposto pcomposto ON pedidos.id = pcomposto.adIdPedido WHERE pedidos.adIdCliente = ? GROUP BY product_name",
+        "SELECT psimples.adReferencia AS product_ref, REPLACE(COALESCE(psimples.adDiscriminacao, pcomposto.adModelo), '\t', '') AS product_name FROM ppedidos pedidos LEFT JOIN ppedidosimples psimples ON pedidos.id = psimples.adIdPedido LEFT JOIN ppedidocomposto pcomposto ON pedidos.id = pcomposto.adIdPedido WHERE pedidos.adIdCliente = ? GROUP BY psimples.adReferencia, product_name;",
         [id]
       );
 
