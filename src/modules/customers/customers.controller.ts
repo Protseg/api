@@ -8,7 +8,7 @@ export const customersController = new Elysia()
     const [results] = await sql.execute(
       "SELECT id AS id, COALESCE(NULLIF(adRazaoSocial, ''), adNomeFantasia) AS customer_name FROM pclientes ORDER BY customer_name DESC"
     );
-    await sql.end();
+    // await sql.end();
 
     return {
       success: true,
@@ -28,14 +28,14 @@ export const customersController = new Elysia()
           "SELECT c.id AS customer_id, c.adRazaoSocial AS customer_name, (SELECT MAX(pp.adData) FROM ppedidos pp WHERE pp.adIdCliente = c.id) AS last_order_date, (SELECT id FROM ppedidos pp WHERE pp.adIdCliente = c.id ORDER BY pp.timestamp DESC LIMIT 1) AS order_id FROM pclientes c WHERE c.id NOT IN (SELECT c1.id FROM pclientes c1, ppedidos p WHERE p.adIdCliente = c1.id AND p.adData >= (date(DATE_SUB(SYSDATE(), INTERVAL ? DAY)))) AND (SELECT MAX(pp.adData) FROM ppedidos pp WHERE pp.adIdCliente = c.id) IS NOT NULL ORDER BY last_order_date DESC",
           [numberOfDays]
         );
-        await sql.end();
+        // await sql.end();
         results = r;
       } else {
         const [r] = await sql.execute(
           "SELECT c.id AS customer_id, c.adRazaoSocial AS customer_name, (SELECT MAX(pp.adData) FROM ppedidos pp WHERE pp.adIdCliente = c.id) AS last_order_date, (SELECT id FROM ppedidos pp WHERE pp.adIdCliente = c.id ORDER BY pp.timestamp DESC LIMIT 1) AS order_id FROM pclientes c WHERE c.id NOT IN (SELECT c1.id FROM pclientes c1, ppedidos p WHERE p.adIdCliente = c1.id AND p.adData >= (date(DATE_SUB(SYSDATE(), INTERVAL ? DAY)))) AND (SELECT MAX(pp.adData) FROM ppedidos pp WHERE pp.adIdCliente = c.id) IS NOT NULL AND (SELECT COUNT(adIdFornecedor) FROM ppedidos pp WHERE pp.adIdCliente = c.id AND pp.adIdFornecedor != ?) = 0 ORDER BY last_order_date DESC",
           [numberOfDays, providerId]
         );
-        await sql.end();
+        // await sql.end();
         results = r;
       }
 
