@@ -13,6 +13,7 @@ export const searchController = new Elysia()
         "SELECT psimples.adReferencia AS product_ref, REPLACE(COALESCE(psimples.adDiscriminacao, pcomposto.adModelo), '\t', '') AS product_name FROM ppedidos pedidos LEFT JOIN ppedidosimples psimples ON pedidos.id = psimples.adIdPedido LEFT JOIN ppedidocomposto pcomposto ON pedidos.id = pcomposto.adIdPedido WHERE pedidos.adIdCliente = ? GROUP BY psimples.adReferencia, product_name;",
         [id]
       );
+      await sql.end();
 
       return {
         success: true,
@@ -35,6 +36,7 @@ export const searchController = new Elysia()
         "SELECT pedidos.id AS id, pedidos.timestamp as order_timestamp, pedidos.idpedido AS order_id, COALESCE(NULLIF(clientes.adRazaoSocial, ''), clientes.adNomeFantasia) AS customer_name, pedidos.adValorTotal AS order_value, pedidos.adTipoPedido AS order_type FROM ppedidos pedidos LEFT JOIN ppedidosimples psimples ON pedidos.id = psimples.adIdPedido LEFT JOIN ppedidocomposto pcomposto ON pedidos.id = pcomposto.adIdPedido INNER JOIN pclientes clientes ON pedidos.adIdCliente = clientes.id WHERE LOWER(psimples.adReferencia) = ? OR LOWER(psimples.adDiscriminacao) LIKE ? OR LOWER(pcomposto.adModelo) LIKE ? GROUP BY pedidos.id ORDER BY pedidos.id DESC",
         [search, searchLike, searchLike]
       );
+      await sql.end();
 
       return {
         success: true,
@@ -56,6 +58,7 @@ export const searchController = new Elysia()
         "SELECT adReferencia as reference, adUnidade AS unity, adDiscriminacao AS name, adIpi AS ipi FROM ppedidosimples WHERE adReferencia = LOWER(?) LIMIT 1",
         [search]
       );
+      await sql.end();
 
       return {
         success: true,
